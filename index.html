@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aula · Aula virtual del colegio</title>
+<meta name="description" content="Aula virtual: cursos, materiales, tareas y notas del colegio.">
+<meta name="theme-color" content="#1d1b3a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1d1b3a; --ink2: #4a4766; --muted: #7d7a95; --paper: #f6f3ec; --card: #fffdf8;
+  --line: #e6e0d2; --accent: #ff6a4d; --mint: #2bb38a; --sky: #4d7cff; --sun: #ffb020; --bad: #e0475b;
+  --r: 18px; --sh: 0 1px 0 rgba(29,27,58,.06), 0 8px 24px -12px rgba(29,27,58,.18);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.5 'DM Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+body { min-height: 100vh; background-image: radial-gradient(rgba(29,27,58,.07) 1px, transparent 1px); background-size: 22px 22px; }
+h1, h2, h3 { font-family: 'Bricolage Grotesque', sans-serif; letter-spacing: -.02em; margin: 0; line-height: 1.1; }
+h1 { font-size: 30px; font-weight: 800; } h2 { font-size: 22px; font-weight: 800; } h3 { font-size: 17px; font-weight: 600; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--sky); }
+.hide { display: none !important; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+
+/* Botones y campos */
+.btn { appearance: none; border: 1.5px solid var(--ink); background: var(--card); border-radius: 999px; padding: 10px 18px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; justify-content: center; transition: transform .12s ease, box-shadow .12s ease, background .12s; box-shadow: 0 2px 0 var(--ink); }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 3px 0 var(--ink); }
+.btn:active { transform: translateY(1px); box-shadow: 0 0 0 var(--ink); }
+.btn.pri { background: var(--ink); color: #fff; }
+.btn.acc { background: var(--accent); border-color: var(--ink); color: #fff; }
+.btn.ghost { border-color: transparent; box-shadow: none; background: transparent; }
+.btn.sm { padding: 6px 12px; font-size: 13px; }
+.btn.bad { color: var(--bad); border-color: var(--bad); box-shadow: 0 2px 0 var(--bad); }
+.btn[disabled] { opacity: .6; pointer-events: none; }
+.btn .dots { display: inline-flex; gap: 4px; } .btn .dots i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: dt .9s infinite ease-in-out; } .btn .dots i:nth-child(2) { animation-delay: .15s; } .btn .dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes dt { 0%, 80%, 100% { opacity: .25; transform: scale(.8); } 40% { opacity: 1; transform: scale(1); } }
+label.f { display: grid; gap: 6px; font-weight: 700; font-size: 13px; color: var(--ink2); }
+.in { width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; outline: none; transition: border-color .15s, box-shadow .15s; font-weight: 500; font-size: 15px; }
+.in:focus { border-color: var(--ink); box-shadow: 0 0 0 4px rgba(77,124,255,.15); }
+textarea.in { min-height: 110px; resize: vertical; }
+.pw { position: relative; } .pw .in { padding-right: 46px; }
+.pw button { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: none; cursor: pointer; padding: 8px; font-size: 18px; line-height: 1; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.err { color: var(--bad); font-weight: 700; font-size: 13px; min-height: 18px; }
+
+/* Ingreso */
+#login { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+.lg { width: min(420px, 100%); background: var(--card); border: 1.5px solid var(--ink); border-radius: 26px; padding: 30px 26px; box-shadow: 0 6px 0 var(--ink); display: grid; gap: 16px; animation: up .35s cubic-bezier(.2,.9,.3,1.2); }
+@keyframes up { from { opacity: 0; transform: translateY(14px) scale(.98); } }
+.brand { display: flex; align-items: center; gap: 10px; }
+.mark { width: 42px; height: 42px; border-radius: 12px; background: var(--ink); color: #fff; display: grid; place-items: center; font: 800 24px 'Bricolage Grotesque'; position: relative; flex: none; }
+.mark::after { content: ''; position: absolute; right: -4px; top: -4px; width: 13px; height: 13px; border-radius: 50%; background: var(--accent); border: 2px solid var(--card); }
+.brand b { font: 800 24px 'Bricolage Grotesque'; letter-spacing: -.03em; }
+
+/* Estructura */
+header.top { position: sticky; top: 0; z-index: 20; background: rgba(246,243,236,.86); backdrop-filter: blur(10px); border-bottom: 1.5px solid var(--line); }
+.topin { max-width: 1100px; margin: 0 auto; padding: 12px 18px; display: flex; align-items: center; gap: 12px; }
+.topin .sp { flex: 1; }
+.who { display: flex; align-items: center; gap: 10px; }
+.av { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: #fff; background: var(--sky); flex: none; font-size: 14px; }
+.rol { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; padding: 3px 8px; border-radius: 99px; background: var(--ink); color: #fff; }
+main { max-width: 1100px; margin: 0 auto; padding: 22px 18px 80px; display: grid; gap: 22px; }
+.crumbs { display: flex; gap: 6px; align-items: center; font-weight: 700; font-size: 14px; color: var(--muted); flex-wrap: wrap; }
+.crumbs a { color: var(--ink2); text-decoration: none; } .crumbs a:hover { text-decoration: underline; }
+.hello { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; }
+.hello p { margin: 6px 0 0; color: var(--ink2); }
+
+.card { background: var(--card); border: 1.5px solid var(--line); border-radius: var(--r); padding: 18px; box-shadow: var(--sh); }
+.sec { display: grid; gap: 12px; }
+.sec-h { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+
+/* Cursos */
+.cursos { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.cu { position: relative; border-radius: 20px; border: 1.5px solid var(--ink); background: var(--card); cursor: pointer; overflow: hidden; text-align: left; padding: 0; box-shadow: 0 3px 0 var(--ink); transition: transform .15s cubic-bezier(.2,.9,.3,1.3), box-shadow .15s; }
+.cu:hover { transform: translateY(-3px) rotate(-.4deg); box-shadow: 0 6px 0 var(--ink); }
+.cu .ban { height: 86px; background: var(--c); position: relative; overflow: hidden; }
+.cu .ban::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, rgba(255,255,255,.14) 0 10px, transparent 10px 20px); }
+.cu .ic { position: absolute; right: 14px; bottom: -18px; font-size: 46px; filter: drop-shadow(0 4px 0 rgba(0,0,0,.15)); }
+.cu .bd { padding: 14px 16px 16px; display: grid; gap: 4px; }
+.cu .bd small { color: var(--muted); font-weight: 700; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 99px; background: rgba(29,27,58,.07); }
+.pill.red { background: #ffe3e6; color: var(--bad); } .pill.ok { background: #d9f5ea; color: #13805f; } .pill.sun { background: #fff0cc; color: #9a6400; }
+
+/* Listas */
+.list { display: grid; gap: 10px; }
+.it { display: flex; gap: 14px; align-items: center; padding: 14px 16px; background: var(--card); border: 1.5px solid var(--line); border-radius: 16px; cursor: pointer; transition: border-color .15s, transform .15s; text-align: left; width: 100%; }
+.it:hover { border-color: var(--ink); transform: translateX(2px); }
+.it .ico { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 20px; flex: none; background: var(--c, #eee); }
+.it .tx { flex: 1; min-width: 0; } .it .tx b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .it .tx span { color: var(--muted); font-size: 13px; }
+.empty { text-align: center; padding: 28px 16px; color: var(--muted); border: 1.5px dashed var(--line); border-radius: 16px; }
+.empty b { display: block; color: var(--ink2); font-size: 16px; margin-bottom: 4px; }
+
+.tabs { justify-self: start; display: inline-flex; background: rgba(29,27,58,.06); padding: 4px; border-radius: 99px; gap: 2px; flex-wrap: wrap; }
+.tabs button { border: 0; background: none; padding: 8px 16px; border-radius: 99px; font-weight: 700; cursor: pointer; color: var(--ink2); }
+.tabs button.on { background: var(--ink); color: #fff; }
+
+.cover { border-radius: 24px; border: 1.5px solid var(--ink); background: var(--c); color: #fff; padding: 26px 24px; position: relative; overflow: hidden; box-shadow: 0 4px 0 var(--ink); }
+.cover::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, rgba(255,255,255,.12) 0 12px, transparent 12px 24px); }
+.cover > * { position: relative; } .cover .ic { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 72px; }
+.cover p { margin: 6px 0 0; opacity: .92; font-weight: 600; }
+
+.mat-body { white-space: pre-wrap; line-height: 1.65; }
+.vid { aspect-ratio: 16/9; width: 100%; border: 0; border-radius: 14px; background: #000; }
+
+table.t { width: 100%; border-collapse: collapse; }
+table.t th, table.t td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+table.t th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.nota { font: 800 20px 'Bricolage Grotesque'; }
+.nota.lo { color: var(--bad); } .nota.hi { color: #13805f; }
+.nin { width: 70px; padding: 8px; text-align: center; }
+
+/* Modal */
+.ov { position: fixed; inset: 0; background: rgba(29,27,58,.45); z-index: 50; display: grid; place-items: center; padding: 16px; animation: fi .15s; }
+@keyframes fi { from { opacity: 0; } }
+.md { width: min(560px, 100%); max-height: 90vh; overflow: auto; background: var(--card); border: 1.5px solid var(--ink); border-radius: 24px; padding: 22px; box-shadow: 0 6px 0 var(--ink); display: grid; gap: 14px; animation: up .25s cubic-bezier(.2,.9,.3,1.2); }
+.md-h { display: flex; justify-content: space-between; align-items: center; }
+.x { border: 0; background: rgba(29,27,58,.07); width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 16px; }
+.sw { display: flex; gap: 8px; flex-wrap: wrap; }
+.sw button { width: 32px; height: 32px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+.sw button.on { border-color: var(--ink); transform: scale(1.12); }
+.sw.ic button { background: #fff; border: 1.5px solid var(--line); font-size: 17px; width: 38px; height: 38px; border-radius: 10px; }
+.sw.ic button.on { border-color: var(--ink); background: #fff3ef; }
+.cred { font-family: ui-monospace, Menlo, monospace; background: #fff; border: 1.5px dashed var(--ink); padding: 2px 8px; border-radius: 8px; font-weight: 700; }
+
+#toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 12px 18px; border-radius: 14px; font-weight: 700; opacity: 0; transition: .2s; z-index: 80; pointer-events: none; max-width: 90vw; }
+#toast.on { opacity: 1; transform: translateX(-50%); }
+
+@media (max-width: 640px) {
+  h1 { font-size: 25px; } .grid2 { grid-template-columns: 1fr; }
+  .topin .nm { display: none; } .cover .ic { font-size: 52px; opacity: .9; }
+  table.t th:nth-child(3), table.t td:nth-child(3) { display: none; }
+}
+@media print {
+  header.top, .btn, .noprint { display: none !important; } body { background: #fff; }
+  body:has(.ov) #app { display: none; } .ov { position: static; background: none; } .md { box-shadow: none; max-height: none; }
+  .card { box-shadow: none; border-color: #999; }
+}
+</style>
+</head>
+<body>
+
+<section id="login" class="hide">
+  <form class="lg" id="lg-form" autocomplete="on">
+    <div class="brand"><div class="mark">A</div><b>Aula</b></div>
+    <div><h2 id="lg-t">Hola de nuevo 👋</h2><p class="muted" id="lg-p" style="margin:6px 0 0">Entra con el usuario y la contraseña que te dio tu colegio.</p></div>
+    <label class="f hide" id="lg-nm-w">Tu nombre completo<input class="in" id="lg-nm" autocomplete="name" maxlength="80"></label>
+    <label class="f">Usuario<input class="in" id="lg-us" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="30" required></label>
+    <label class="f">Contraseña<div class="pw"><input class="in" id="lg-pw" type="password" autocomplete="current-password" minlength="6" maxlength="72" required><button type="button" data-eye aria-label="Ver contraseña">👁️</button></div></label>
+    <div class="err" id="lg-err"></div>
+    <button class="btn pri" id="lg-btn" type="submit">Entrar</button>
+    <p class="muted small" id="lg-help" style="margin:0;text-align:center">¿Olvidaste tu contraseña? Pídele una nueva a la dirección.</p>
+  </form>
+</section>
+
+<div id="app" class="hide">
+  <header class="top"><div class="topin">
+    <a href="#/" class="brand" style="text-decoration:none;color:inherit"><div class="mark">A</div><b>Aula</b></a>
+    <div class="sp"></div>
+    <div class="who"><div class="av" id="me-av"></div><div class="nm"><b id="me-nm"></b><br><span class="rol" id="me-rol"></span></div></div>
+    <button class="btn sm ghost" id="salir" type="button">Salir</button>
+  </div></header>
+  <main id="view"></main>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script>
+(function () {
+  'use strict';
+  var cfg = window.AULA_CONFIG || {};
+  var DB = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+  var DOM = '@aula.invalid';
+  var ME = null, CURSOS = [], PROFES = {}, VIEW = $('view');
+  var COLORES = ['#5b5bd6', '#ff6a4d', '#2bb38a', '#4d7cff', '#e0475b', '#b05bd6', '#0f9bb3', '#e08a1e'];
+  var ICONOS = ['📘', '📐', '🧪', '📖', '🌎', '🎨', '🏃', '💻', '🎵', '🗣️', '🧠', '⚖️'];
+
+  /* ---------- utilidades ---------- */
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function toast(t) { var e = $('toast'); e.textContent = t; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(function () { e.classList.remove('on'); }, 2600); }
+  function busy(b, on) { if (!b) return; if (on) { b.dataset.txt = b.innerHTML; b.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>'; b.disabled = true; } else { if (b.dataset.txt != null) b.innerHTML = b.dataset.txt; b.disabled = false; } }
+  function salon(g, s) { return g + '° ' + s; }
+  function ini(n) { return String(n || '?').split(' ').filter(Boolean).slice(0, 2).map(function (p) { return p[0]; }).join('').toUpperCase(); }
+  var MES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'set', 'oct', 'nov', 'dic'];
+  var DIA = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+  function fecha(iso) { var d = new Date(iso); return DIA[d.getDay()] + ' ' + d.getDate() + ' ' + MES[d.getMonth()] + ', ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
+  function falta(iso) {
+    var ms = new Date(iso) - Date.now();
+    if (ms < 0) return { t: 'Venció', c: 'red' };
+    var h = ms / 36e5;
+    if (h < 24) return { t: 'Vence en ' + Math.max(1, Math.round(h)) + ' h', c: 'red' };
+    var d = Math.round(h / 24); return { t: 'En ' + d + (d === 1 ? ' día' : ' días'), c: d <= 2 ? 'sun' : '' };
+  }
+  function notaHtml(n) { if (n == null) return '<span class="muted">—</span>'; n = Number(n); return '<span class="nota ' + (n < 11 ? 'lo' : n >= 17 ? 'hi' : '') + '">' + (n % 1 ? n.toFixed(1) : n) + '</span>'; }
+  function cursoDe(id) { for (var i = 0; i < CURSOS.length; i++) if (CURSOS[i].id === id) return CURSOS[i]; return null; }
+  function ytId(u) { var m = String(u || '').match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/); return m ? m[1] : null; }
+  function safeUrl(u) { return /^https:\/\//i.test(u || '') ? u : '#'; }
+  function modal(html, onOpen) {
+    var ov = document.createElement('div'); ov.className = 'ov'; ov.innerHTML = '<div class="md" role="dialog" aria-modal="true">' + html + '</div>';
+    document.body.appendChild(ov);
+    function close() { ov.remove(); document.removeEventListener('keydown', k); }
+    function k(e) { if (e.key === 'Escape') close(); }
+    document.addEventListener('keydown', k);
+    ov.addEventListener('click', function (e) { if (e.target === ov || e.target.closest('[data-close]')) close(); });
+    if (onOpen) onOpen(ov.firstChild, close);
+    var f = ov.querySelector('input,textarea,select'); if (f) setTimeout(function () { f.focus(); }, 60);
+    return close;
+  }
+  function mdHead(t) { return '<div class="md-h"><h2>' + t + '</h2><button class="x" type="button" data-close aria-label="Cerrar">✕</button></div>'; }
+  function cuentas(body) {
+    return DB.functions.invoke('aula-cuentas', { body: body }).then(function (r) {
+      if (r.error) { var c = r.error.context; return c && c.json ? c.json().then(function (j) { return j; }, function () { return { error: 'red' }; }) : { error: 'red' }; }
+      return r.data;
+    });
+  }
+  var ERR = { usuario: 'El usuario solo puede tener minúsculas, números, punto o guion bajo (3 a 30).', usuario_existe: 'Ese usuario ya existe.', clave: 'La contraseña debe tener al menos 6 caracteres.', nombre: 'Escribe el nombre completo.', grado: 'Elige grado y sección.', red: 'No hay conexión. Intenta de nuevo.' };
+  function errTxt(r) { return ERR[r] || 'No se pudo guardar. Intenta de nuevo.'; }
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-eye]'); if (!b) return;
+    var i = b.previousElementSibling; var on = i.type === 'password'; i.type = on ? 'text' : 'password'; b.textContent = on ? '🙈' : '👁️';
+  });
+
+  /* ---------- ingreso ---------- */
+  var SETUP = false;
+  function showLogin() {
+    $('app').classList.add('hide'); $('login').classList.remove('hide');
+    cuentas({ accion: 'hay_director' }).then(function (r) {
+      if (r && r.r === false) {
+        SETUP = true;
+        $('lg-t').textContent = 'Primer ingreso ✨';
+        $('lg-p').textContent = 'Crea la cuenta de director. Con ella darás de alta a profesores y alumnos.';
+        $('lg-nm-w').classList.remove('hide'); $('lg-btn').textContent = 'Crear cuenta de director';
+        $('lg-pw').autocomplete = 'new-password'; $('lg-help').classList.add('hide');
+      }
+    });
+  }
+  $('lg-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var us = $('lg-us').value.trim().toLowerCase(), pw = $('lg-pw').value, b = $('lg-btn');
+    $('lg-err').textContent = '';
+    busy(b, true);
+    var pre = SETUP ? cuentas({ accion: 'inicial', nombre: $('lg-nm').value, usuario: us, clave: pw }).then(function (r) {
+      if (!r || r.r !== 'ok') throw new Error(errTxt(r && (r.r || r.error)));
+    }) : Promise.resolve();
+    pre.then(function () {
+      return DB.auth.signInWithPassword({ email: us + DOM, password: pw });
+    }).then(function (r) {
+      if (r.error) throw new Error(/invalid/i.test(r.error.message) ? 'Usuario o contraseña incorrectos.' : 'No se pudo entrar. Intenta de nuevo.');
+      return arrancar();
+    }).catch(function (er) { $('lg-err').textContent = er.message; }).then(function () { busy(b, false); });
+  });
+  $('salir').addEventListener('click', function () { DB.auth.signOut().then(function () { location.hash = ''; location.reload(); }); });
+
+  function arrancar() {
+    return DB.auth.getUser().then(function (u) {
+      if (!u.data || !u.data.user) { showLogin(); return; }
+      return DB.from('aula_perfiles').select('*').eq('id', u.data.user.id).maybeSingle().then(function (r) {
+        if (!r.data) { DB.auth.signOut(); showLogin(); $('lg-err').textContent = 'Tu cuenta no está registrada en el colegio.'; return; }
+        ME = r.data;
+        $('me-nm').textContent = ME.nombre.split(' ')[0];
+        $('me-rol').textContent = ME.rol === 'alumno' ? 'Alumno · ' + salon(ME.grado, ME.seccion) : ME.rol;
+        $('me-av').textContent = ini(ME.nombre);
+        $('me-av').style.background = ME.rol === 'director' ? 'var(--accent)' : ME.rol === 'profesor' ? 'var(--mint)' : 'var(--sky)';
+        $('login').classList.add('hide'); $('app').classList.remove('hide');
+        return cargarCursos().then(ruta);
+      });
+    });
+  }
+  function cargarCursos() {
+    return Promise.all([
+      DB.from('aula_cursos').select('*').order('grado').order('seccion').order('nombre'),
+      DB.from('aula_perfiles').select('id,nombre').eq('rol', 'profesor')
+    ]).then(function (rs) {
+      CURSOS = rs[0].data || []; PROFES = {};
+      (rs[1].data || []).forEach(function (p) { PROFES[p.id] = p.nombre; });
+    });
+  }
+
+  /* ---------- rutas ---------- */
+  window.addEventListener('hashchange', function () { if (ME) ruta(); });
+  function ruta() {
+    var h = location.hash.replace(/^#\/?/, '').split('/');
+    window.scrollTo(0, 0);
+    if (h[0] === 'c' && h[1]) return verCurso(+h[1], h[2] || 'tareas');
+    if (h[0] === 't' && h[1]) return verTarea(+h[1]);
+    if (h[0] === 'm' && h[1]) return verMaterial(+h[1]);
+    if (h[0] === 'admin' && ME.rol === 'director') return verAdmin(h[1] || 'cursos');
+    return inicio();
+  }
+  function cardCurso(c) {
+    return '<button class="cu" style="--c:' + esc(c.color) + '" data-go="#/c/' + c.id + '"><div class="ban"><span class="ic">' + esc(c.icono) + '</span></div>' +
+      '<div class="bd"><h3>' + esc(c.nombre) + '</h3><small>' + salon(c.grado, c.seccion) + ' · ' + esc(PROFES[c.profesor_id] || 'Sin profesor') + '</small></div></button>';
+  }
+  VIEW.addEventListener('click', function (e) { var g = e.target.closest('[data-go]'); if (g) location.hash = g.getAttribute('data-go'); });
+
+  /* ---------- inicio ---------- */
+  function saludo() { var h = new Date().getHours(); return h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches'; }
+  function inicio() {
+    var nm = esc(ME.nombre.split(' ')[0]);
+    var top = '<div class="hello"><div><h1>' + saludo() + ', ' + nm + '</h1><p>' +
+      (ME.rol === 'alumno' ? 'Esto es lo que tienes pendiente.' : ME.rol === 'profesor' ? 'Tus cursos y lo que falta calificar.' : 'Así va el colegio hoy.') + '</p></div>' +
+      (ME.rol === 'director' ? '<button class="btn acc" data-go="#/admin">⚙️ Administrar colegio</button>' : '') + '</div>';
+    var cur = '<section class="sec"><div class="sec-h"><h2>' + (ME.rol === 'director' ? 'Todos los cursos' : 'Mis cursos') + '</h2></div>' +
+      (CURSOS.length ? '<div class="cursos">' + CURSOS.map(cardCurso).join('') + '</div>' :
+        '<div class="empty"><b>Todavía no hay cursos</b>' + (ME.rol === 'director' ? 'Créalos en «Administrar colegio».' : 'La dirección los asignará pronto.') + '</div>') + '</section>';
+    VIEW.innerHTML = top + '<section class="sec" id="pend"></section>' + cur;
+    if (!CURSOS.length) return;
+    var ids = CURSOS.map(function (c) { return c.id; });
+    if (ME.rol === 'alumno') {
+      Promise.all([
+        DB.from('aula_tareas').select('id,titulo,vence,curso_id,puntos').in('curso_id', ids).gte('vence', new Date(Date.now() - 7 * 864e5).toISOString()).order('vence'),
+        DB.from('aula_entregas').select('tarea_id,nota').eq('alumno_id', ME.id)
+      ]).then(function (rs) {
+        var hechas = {}; (rs[1].data || []).forEach(function (e) { hechas[e.tarea_id] = e; });
+        var pend = (rs[0].data || []).filter(function (t) { return !hechas[t.id]; });
+        $('pend').innerHTML = '<div class="sec-h"><h2>Pendientes</h2>' + (pend.length ? '<span class="pill sun">' + pend.length + '</span>' : '') + '</div>' +
+          (pend.length ? '<div class="list">' + pend.map(function (t) { return itTarea(t); }).join('') + '</div>' : '<div class="empty"><b>¡Estás al día! 🎉</b>No tienes tareas pendientes.</div>');
+      });
+    } else {
+      DB.from('aula_tareas').select('id,titulo,vence,curso_id,aula_entregas(id,nota)').in('curso_id', ids).order('vence', { ascending: false }).limit(40).then(function (r) {
+        var por = (r.data || []).filter(function (t) { return (t.aula_entregas || []).some(function (e) { return e.nota == null; }); });
+        $('pend').innerHTML = por.length ? '<div class="sec-h"><h2>Por calificar</h2><span class="pill sun">' + por.length + '</span></div><div class="list">' +
+          por.map(function (t) { var n = t.aula_entregas.filter(function (e) { return e.nota == null; }).length; return itTarea(t, n + (n === 1 ? ' entrega nueva' : ' entregas nuevas')); }).join('') + '</div>' : '';
+      });
+    }
+  }
+  function itTarea(t, extra) {
+    var c = cursoDe(t.curso_id) || {}, f = falta(t.vence);
+    return '<button class="it" data-go="#/t/' + t.id + '"><span class="ico" style="--c:' + esc(c.color) + '22">' + esc(c.icono || '📝') + '</span>' +
+      '<span class="tx"><b>' + esc(t.titulo) + '</b><span>' + esc(c.nombre || '') + ' · ' + fecha(t.vence) + '</span></span>' +
+      (extra ? '<span class="pill sun">' + esc(extra) + '</span>' : '<span class="pill ' + f.c + '">' + f.t + '</span>') + '</button>';
+  }
+
+  /* ---------- curso ---------- */
+  function puedeEditar(c) { return ME.rol === 'director' || (ME.rol === 'profesor' && c.profesor_id === ME.id); }
+  function verCurso(id, tab) {
+    var c = cursoDe(id); if (!c) { location.hash = '#/'; return; }
+    var ed = puedeEditar(c);
+    VIEW.innerHTML = '<div class="crumbs"><a href="#/">Inicio</a> › <span>' + esc(c.nombre) + '</span></div>' +
+      '<div class="cover" style="--c:' + esc(c.color) + '"><span class="ic">' + esc(c.icono) + '</span><h1>' + esc(c.nombre) + '</h1><p>' + salon(c.grado, c.seccion) + ' · ' + esc(PROFES[c.profesor_id] || 'Sin profesor') + '</p></div>' +
+      '<div class="sec-h"><div class="tabs"><button data-go="#/c/' + id + '/tareas" class="' + (tab === 'tareas' ? 'on' : '') + '">📝 Tareas</button><button data-go="#/c/' + id + '/materiales" class="' + (tab === 'materiales' ? 'on' : '') + '">📚 Materiales</button>' +
+      (ed ? '<button data-go="#/c/' + id + '/notas" class="' + (tab === 'notas' ? 'on' : '') + '">📊 Notas</button>' : '') + '</div>' +
+      (ed && tab === 'tareas' ? '<button class="btn pri sm" id="nueva-t">+ Nueva tarea</button>' : '') +
+      (ed && tab === 'materiales' ? '<button class="btn pri sm" id="nuevo-m">+ Subir material</button>' : '') + '</div><div id="cu-body"><div class="empty">Cargando…</div></div>';
+    if ($('nueva-t')) $('nueva-t').onclick = function () { formTarea(c); };
+    if ($('nuevo-m')) $('nuevo-m').onclick = function () { formMaterial(c); };
+    var body = $('cu-body');
+    if (tab === 'materiales') {
+      DB.from('aula_materiales').select('id,titulo,tipo,creado').eq('curso_id', id).order('creado', { ascending: false }).then(function (r) {
+        var L = r.data || [], ic = { texto: '📄', link: '🔗', video: '🎬', archivo: '📎' };
+        body.innerHTML = L.length ? '<div class="list">' + L.map(function (m) {
+          return '<button class="it" data-go="#/m/' + m.id + '"><span class="ico" style="--c:' + esc(c.color) + '22">' + ic[m.tipo] + '</span><span class="tx"><b>' + esc(m.titulo) + '</b><span>' + fecha(m.creado) + '</span></span></button>';
+        }).join('') + '</div>' : '<div class="empty"><b>Sin materiales todavía</b>' + (ed ? 'Sube tu primera clase: un texto, un PDF, un video o un enlace.' : 'Tu profesor los subirá aquí.') + '</div>';
+      });
+    } else if (tab === 'notas' && ed) {
+      verNotas(c, body);
+    } else {
+      var q = [DB.from('aula_tareas').select('id,titulo,vence,curso_id,puntos').eq('curso_id', id).order('vence', { ascending: false })];
+      if (ME.rol === 'alumno') q.push(DB.from('aula_entregas').select('tarea_id,nota').eq('alumno_id', ME.id));
+      Promise.all(q).then(function (rs) {
+        var L = rs[0].data || [], mis = {}; if (rs[1]) (rs[1].data || []).forEach(function (e) { mis[e.tarea_id] = e; });
+        body.innerHTML = L.length ? '<div class="list">' + L.map(function (t) {
+          if (ME.rol !== 'alumno') return itTarea(t);
+          var e = mis[t.id], f = falta(t.vence);
+          return '<button class="it" data-go="#/t/' + t.id + '"><span class="ico" style="--c:' + esc(c.color) + '22">' + (e ? '✅' : '📝') + '</span><span class="tx"><b>' + esc(t.titulo) + '</b><span>' + fecha(t.vence) + '</span></span>' +
+            (e ? (e.nota != null ? notaHtml(e.nota) : '<span class="pill ok">Entregada</span>') : '<span class="pill ' + f.c + '">' + f.t + '</span>') + '</button>';
+        }).join('') + '</div>' : '<div class="empty"><b>Sin tareas</b>' + (ed ? 'Crea la primera con «+ Nueva tarea».' : 'Por ahora no hay nada que entregar. 😎') + '</div>';
+      });
+    }
+  }
+
+  function swatches(sel, list, cls) { return '<div class="sw ' + (cls || '') + '">' + list.map(function (v) { return '<button type="button" data-v="' + esc(v) + '" class="' + (v === sel ? 'on' : '') + '"' + (cls ? '' : ' style="background:' + v + '"') + '>' + (cls ? v : '') + '</button>'; }).join('') + '</div>'; }
+  function swBind(root) { root.querySelectorAll('.sw').forEach(function (sw) { sw.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; sw.querySelectorAll('button').forEach(function (x) { x.classList.remove('on'); }); b.classList.add('on'); }); }); }
+  function swVal(root, i) { var b = root.querySelectorAll('.sw')[i].querySelector('.on'); return b ? b.getAttribute('data-v') : null; }
+  function localDT(d) { var p = function (n) { return String(n).padStart(2, '0'); }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes()); }
+
+  function formTarea(c, t) {
+    var d = t ? new Date(t.vence) : new Date(Date.now() + 3 * 864e5); if (!t) d.setHours(23, 59, 0, 0);
+    modal(mdHead(t ? 'Editar tarea' : 'Nueva tarea') +
+      '<label class="f">Título<input class="in" id="ft-t" maxlength="120" value="' + esc(t ? t.titulo : '') + '" placeholder="Ej. Resolver la ficha 3"></label>' +
+      '<label class="f">Instrucciones<textarea class="in" id="ft-d" maxlength="4000" placeholder="Qué deben hacer y cómo entregarlo">' + esc(t ? t.descripcion : '') + '</textarea></label>' +
+      '<div class="grid2"><label class="f">Fecha límite<input class="in" id="ft-v" type="datetime-local" value="' + localDT(d) + '"></label>' +
+      '<label class="f">Puntos de experiencia<input class="in" id="ft-p" type="number" min="0" max="100" value="' + (t ? t.puntos : 10) + '"></label></div>' +
+      '<div class="err" id="ft-e"></div><div class="row" style="justify-content:flex-end">' + (t ? '<button class="btn bad sm" id="ft-x" type="button">Eliminar</button><span style="flex:1"></span>' : '') + '<button class="btn" data-close type="button">Cancelar</button><button class="btn pri" id="ft-ok" type="button">' + (t ? 'Guardar' : 'Publicar tarea') + '</button></div>',
+      function (m, close) {
+        $('ft-ok').onclick = function () {
+          var ti = $('ft-t').value.trim(), v = $('ft-v').value;
+          if (ti.length < 2) { $('ft-e').textContent = 'Ponle un título.'; return; }
+          if (!v) { $('ft-e').textContent = 'Elige la fecha límite.'; return; }
+          var row = { titulo: ti, descripcion: $('ft-d').value.trim() || null, vence: new Date(v).toISOString(), puntos: Math.max(0, Math.min(100, +$('ft-p').value || 0)) };
+          busy(this, true); var b = this;
+          (t ? DB.from('aula_tareas').update(row).eq('id', t.id) : DB.from('aula_tareas').insert(Object.assign({ curso_id: c.id }, row))).then(function (r) {
+            busy(b, false);
+            if (r.error) { $('ft-e').textContent = 'No se pudo guardar. Intenta de nuevo.'; return; }
+            close(); toast(t ? 'Tarea actualizada' : 'Tarea publicada ✅'); ruta();
+          });
+        };
+        if ($('ft-x')) $('ft-x').onclick = function () {
+          if (!confirm('¿Eliminar esta tarea y sus entregas? No se puede deshacer.')) return;
+          DB.from('aula_tareas').delete().eq('id', t.id).then(function (r) { if (r.error) { toast('No se pudo eliminar'); return; } close(); toast('Tarea eliminada'); location.hash = '#/c/' + c.id; });
+        };
+      });
+  }
+
+  function formMaterial(c) {
+    modal(mdHead('Subir material') +
+      '<div class="tabs" id="fm-tipo"><button type="button" class="on" data-t="texto">📄 Texto</button><button type="button" data-t="archivo">📎 Archivo</button><button type="button" data-t="video">🎬 Video</button><button type="button" data-t="link">🔗 Enlace</button></div>' +
+      '<label class="f">Título<input class="in" id="fm-t" maxlength="120" placeholder="Ej. Clase 1: Fracciones"></label>' +
+      '<label class="f" id="fm-cw">Contenido<textarea class="in" id="fm-c" maxlength="8000" placeholder="Escribe la clase, resumen o indicaciones"></textarea></label>' +
+      '<label class="f hide" id="fm-uw"><span id="fm-ul">Enlace</span><input class="in" id="fm-u" type="url" placeholder="https://"></label>' +
+      '<label class="f hide" id="fm-fw">Archivo (PDF, imagen, Word… hasta 20 MB)<input class="in" id="fm-f" type="file"></label>' +
+      '<div class="err" id="fm-e"></div><div class="row" style="justify-content:flex-end"><button class="btn" data-close type="button">Cancelar</button><button class="btn pri" id="fm-ok" type="button">Publicar</button></div>',
+      function (m, close) {
+        var tipo = 'texto';
+        $('fm-tipo').onclick = function (e) {
+          var b = e.target.closest('[data-t]'); if (!b) return; tipo = b.getAttribute('data-t');
+          $('fm-tipo').querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+          $('fm-uw').classList.toggle('hide', tipo !== 'video' && tipo !== 'link');
+          $('fm-fw').classList.toggle('hide', tipo !== 'archivo');
+          $('fm-ul').textContent = tipo === 'video' ? 'Enlace de YouTube' : 'Enlace';
+          $('fm-c').placeholder = tipo === 'texto' ? 'Escribe la clase, resumen o indicaciones' : 'Descripción (opcional)';
+        };
+        $('fm-ok').onclick = function () {
+          var b = this, ti = $('fm-t').value.trim(), u = $('fm-u').value.trim(), f = $('fm-f').files[0], co = $('fm-c').value.trim();
+          if (ti.length < 2) { $('fm-e').textContent = 'Ponle un título.'; return; }
+          if (tipo === 'texto' && !co) { $('fm-e').textContent = 'Escribe el contenido.'; return; }
+          if ((tipo === 'link' || tipo === 'video') && !/^https:\/\//i.test(u)) { $('fm-e').textContent = 'Pega un enlace que empiece con https://'; return; }
+          if (tipo === 'video' && !ytId(u)) { $('fm-e').textContent = 'Ese no parece un enlace de YouTube.'; return; }
+          if (tipo === 'archivo' && !f) { $('fm-e').textContent = 'Elige un archivo.'; return; }
+          if (f && f.size > 20 * 1048576) { $('fm-e').textContent = 'El archivo pesa más de 20 MB.'; return; }
+          busy(b, true);
+          var up = f && tipo === 'archivo' ? subir('c' + c.id + '/m/' + Date.now() + '-' + nombreArchivo(f.name), f) : Promise.resolve(null);
+          up.then(function (path) {
+            return DB.from('aula_materiales').insert({ curso_id: c.id, titulo: ti, tipo: tipo, contenido: co || null, url: (tipo === 'link' || tipo === 'video') ? u : null, archivo: path });
+          }).then(function (r) {
+            if (r.error) throw r.error; close(); toast('Material publicado ✅'); ruta();
+          }).catch(function () { $('fm-e').textContent = 'No se pudo subir. Intenta de nuevo.'; }).then(function () { busy(b, false); });
+        };
+      });
+  }
+  function nombreArchivo(n) { return String(n).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w.-]+/g, '_').slice(-60); }
+  function subir(path, f) { return DB.storage.from('aula').upload(path, f, { upsert: false, contentType: f.type || undefined }).then(function (r) { if (r.error) throw r.error; return path; }); }
+  function abrirArchivo(path) {
+    return DB.storage.from('aula').createSignedUrl(path, 3600).then(function (r) { if (r.data && r.data.signedUrl) window.open(r.data.signedUrl, '_blank', 'noopener'); else toast('No se pudo abrir el archivo'); });
+  }
+  VIEW.addEventListener('click', function (e) { var a = e.target.closest('[data-file]'); if (a) { e.preventDefault(); abrirArchivo(a.getAttribute('data-file')); } });
+
+  function verMaterial(id) {
+    VIEW.innerHTML = '<div class="empty">Cargando…</div>';
+    DB.from('aula_materiales').select('*').eq('id', id).maybeSingle().then(function (r) {
+      var m = r.data, c = m && cursoDe(m.curso_id); if (!m || !c) { location.hash = '#/'; return; }
+      var y = m.tipo === 'video' && ytId(m.url);
+      VIEW.innerHTML = '<div class="crumbs"><a href="#/">Inicio</a> › <a href="#/c/' + c.id + '/materiales">' + esc(c.nombre) + '</a> › <span>Material</span></div>' +
+        '<article class="card sec"><div class="sec-h"><h1>' + esc(m.titulo) + '</h1>' + (puedeEditar(c) ? '<button class="btn bad sm" id="m-x">Eliminar</button>' : '') + '</div><span class="muted small">' + fecha(m.creado) + '</span>' +
+        (y ? '<iframe class="vid" src="https://www.youtube-nocookie.com/embed/' + y + '" allowfullscreen loading="lazy" title="Video"></iframe>' : '') +
+        (m.contenido ? '<div class="mat-body">' + esc(m.contenido) + '</div>' : '') +
+        (m.tipo === 'link' ? '<a class="btn" href="' + esc(safeUrl(m.url)) + '" target="_blank" rel="noopener">🔗 Abrir enlace</a>' : '') +
+        (m.archivo ? '<a class="btn pri" href="#" data-file="' + esc(m.archivo) + '">📎 Abrir archivo</a>' : '') + '</article>';
+      if ($('m-x')) $('m-x').onclick = function () {
+        if (!confirm('¿Eliminar este material?')) return;
+        DB.from('aula_materiales').delete().eq('id', m.id).then(function (r) {
+          if (r.error) { toast('No se pudo eliminar'); return; }
+          if (m.archivo) DB.storage.from('aula').remove([m.archivo]);
+          toast('Material eliminado'); location.hash = '#/c/' + c.id + '/materiales';
+        });
+      };
+    });
+  }
+
+  /* ---------- tarea ---------- */
+  function verTarea(id) {
+    VIEW.innerHTML = '<div class="empty">Cargando…</div>';
+    DB.from('aula_tareas').select('*').eq('id', id).maybeSingle().then(function (r) {
+      var t = r.data, c = t && cursoDe(t.curso_id); if (!t || !c) { location.hash = '#/'; return; }
+      var f = falta(t.vence);
+      VIEW.innerHTML = '<div class="crumbs"><a href="#/">Inicio</a> › <a href="#/c/' + c.id + '">' + esc(c.nombre) + '</a> › <span>Tarea</span></div>' +
+        '<article class="card sec"><div class="sec-h"><h1>' + esc(t.titulo) + '</h1>' + (puedeEditar(c) ? '<button class="btn sm" id="t-ed">✏️ Editar</button>' : '') + '</div>' +
+        '<div class="row"><span class="pill ' + f.c + '">⏰ ' + fecha(t.vence) + ' · ' + f.t + '</span><span class="pill">⭐ ' + t.puntos + ' puntos</span></div>' +
+        (t.descripcion ? '<div class="mat-body">' + esc(t.descripcion) + '</div>' : '') + '</article><section id="t-zona"></section>';
+      if ($('t-ed')) $('t-ed').onclick = function () { formTarea(c, t); };
+      if (ME.rol === 'alumno') zonaAlumno(t, c); else zonaProfe(t, c);
+    });
+  }
+  function zonaAlumno(t, c) {
+    DB.from('aula_entregas').select('*').eq('tarea_id', t.id).eq('alumno_id', ME.id).maybeSingle().then(function (r) {
+      var e = r.data, z = $('t-zona');
+      if (e && e.nota != null) {
+        z.innerHTML = '<div class="card sec"><div class="sec-h"><h2>Tu nota</h2>' + notaHtml(e.nota) + '</div>' +
+          (e.comentario ? '<p style="margin:0"><b>Comentario del profesor:</b> ' + esc(e.comentario) + '</p>' : '') +
+          '<p class="muted small" style="margin:0">Entregaste el ' + fecha(e.entregado) + '</p>' + (e.texto ? '<div class="mat-body">' + esc(e.texto) + '</div>' : '') +
+          (e.archivo ? '<a class="btn sm" href="#" data-file="' + esc(e.archivo) + '">📎 Ver mi archivo</a>' : '') + '</div>';
+        return;
+      }
+      z.innerHTML = '<div class="card sec"><div class="sec-h"><h2>' + (e ? 'Tu entrega ✅' : 'Entregar') + '</h2>' + (e ? '<span class="pill ok">Entregada ' + fecha(e.entregado) + '</span>' : '') + '</div>' +
+        (e ? '<p class="muted small" style="margin:0">Puedes cambiarla hasta que tu profesor la califique.</p>' : '') +
+        '<label class="f">Tu respuesta<textarea class="in" id="e-tx" maxlength="8000" placeholder="Escribe aquí tu respuesta">' + esc(e ? e.texto : '') + '</textarea></label>' +
+        '<label class="f">Adjuntar archivo (opcional, hasta 20 MB)<input class="in" type="file" id="e-f"></label>' +
+        (e && e.archivo ? '<a class="small" href="#" data-file="' + esc(e.archivo) + '">📎 Ver el archivo que enviaste</a>' : '') +
+        '<div class="err" id="e-err"></div><div class="row"><button class="btn acc" id="e-ok">' + (e ? 'Actualizar entrega' : 'Entregar tarea 🚀') + '</button></div></div>';
+      $('e-ok').onclick = function () {
+        var b = this, tx = $('e-tx').value.trim(), fl = $('e-f').files[0];
+        if (!tx && !fl && !(e && e.archivo)) { $('e-err').textContent = 'Escribe tu respuesta o adjunta un archivo.'; return; }
+        if (fl && fl.size > 20 * 1048576) { $('e-err').textContent = 'El archivo pesa más de 20 MB.'; return; }
+        busy(b, true);
+        (fl ? subir('c' + c.id + '/e/' + ME.id + '/' + t.id + '-' + Date.now() + '-' + nombreArchivo(fl.name), fl) : Promise.resolve(null)).then(function (path) {
+          return DB.rpc('aula_entregar', { p_tarea: t.id, p_texto: tx, p_archivo: path });
+        }).then(function (r) {
+          if (r.error || r.data !== 'ok') throw new Error(r.data === 'ya_calificada' ? 'Tu profesor ya calificó esta tarea.' : 'No se pudo entregar. Intenta de nuevo.');
+          toast('¡Tarea entregada! 🚀'); verTarea(t.id);
+        }).catch(function (er) { $('e-err').textContent = er.message || 'No se pudo entregar. Intenta de nuevo.'; }).then(function () { busy(b, false); });
+      };
+    });
+  }
+  function zonaProfe(t, c) {
+    Promise.all([
+      DB.from('aula_perfiles').select('id,nombre').eq('rol', 'alumno').eq('grado', c.grado).eq('seccion', c.seccion).order('nombre'),
+      DB.from('aula_entregas').select('*').eq('tarea_id', t.id)
+    ]).then(function (rs) {
+      var al = rs[0].data || [], en = {}; (rs[1].data || []).forEach(function (e) { en[e.alumno_id] = e; });
+      var n = (rs[1].data || []).length;
+      $('t-zona').innerHTML = '<div class="card sec"><div class="sec-h"><h2>Entregas</h2><span class="pill">' + n + ' de ' + al.length + '</span></div>' +
+        (al.length ? '<table class="t"><thead><tr><th>Alumno</th><th>Entrega</th><th>Fecha</th><th>Nota (0-20)</th></tr></thead><tbody>' + al.map(function (a) {
+          var e = en[a.id];
+          return '<tr><td><b>' + esc(a.nombre) + '</b></td><td>' + (e ? (e.texto ? '<div class="small" style="max-width:320px;white-space:pre-wrap">' + esc(e.texto.slice(0, 400)) + (e.texto.length > 400 ? '…' : '') + '</div>' : '') +
+            (e.archivo ? '<a class="small" href="#" data-file="' + esc(e.archivo) + '">📎 Archivo</a>' : '') : '<span class="pill red">No entregó</span>') + '</td>' +
+            '<td class="small muted">' + (e ? fecha(e.entregado) + (new Date(e.entregado) > new Date(t.vence) ? '<br><span class="pill sun">Tarde</span>' : '') : '') + '</td>' +
+            '<td>' + (e ? '<div class="row" style="gap:6px"><input class="in nin" type="number" min="0" max="20" step="0.5" data-n="' + e.id + '" value="' + (e.nota != null ? e.nota : '') + '" placeholder="—">' +
+              '<input class="in small" style="width:160px;padding:8px" data-cm="' + e.id + '" maxlength="1000" placeholder="Comentario" value="' + esc(e.comentario || '') + '"><button class="btn sm" data-cal="' + e.id + '">' + (e.nota != null ? 'Cambiar' : 'Calificar') + '</button></div>' : '') + '</td></tr>';
+        }).join('') + '</tbody></table>' : '<div class="empty"><b>Este salón aún no tiene alumnos</b>La dirección debe crearlos.</div>') + '</div>';
+      $('t-zona').onclick = function (ev) {
+        var b = ev.target.closest('[data-cal]'); if (!b) return;
+        var id = b.getAttribute('data-cal'), nv = document.querySelector('[data-n="' + id + '"]').value, cm = document.querySelector('[data-cm="' + id + '"]').value;
+        var nn = parseFloat(nv); if (isNaN(nn) || nn < 0 || nn > 20) { toast('La nota va de 0 a 20'); return; }
+        busy(b, true);
+        DB.rpc('aula_calificar', { p_entrega: +id, p_nota: nn, p_comentario: cm || null }).then(function (r) {
+          busy(b, false); if (r.error || r.data !== 'ok') { toast('No se pudo calificar'); return; }
+          b.textContent = 'Cambiar'; toast('Nota guardada ✅');
+        });
+      };
+    });
+  }
+
+  function verNotas(c, body) {
+    Promise.all([
+      DB.from('aula_perfiles').select('id,nombre').eq('rol', 'alumno').eq('grado', c.grado).eq('seccion', c.seccion).order('nombre'),
+      DB.from('aula_tareas').select('id,titulo,vence,aula_entregas(alumno_id,nota)').eq('curso_id', c.id).order('vence')
+    ]).then(function (rs) {
+      var al = rs[0].data || [], ts = rs[1].data || [];
+      if (!al.length || !ts.length) { body.innerHTML = '<div class="empty"><b>Aún no hay notas</b>Aparecerán cuando califiques tareas.</div>'; return; }
+      var m = {}; ts.forEach(function (t) { (t.aula_entregas || []).forEach(function (e) { m[t.id + ':' + e.alumno_id] = e.nota; }); });
+      body.innerHTML = '<div class="card" style="overflow:auto"><div class="sec-h noprint" style="margin-bottom:8px"><span class="muted small">Promedio de tareas calificadas</span><button class="btn sm" onclick="print()">🖨️ Imprimir</button></div><table class="t"><thead><tr><th>Alumno</th>' +
+        ts.map(function (t, i) { return '<th title="' + esc(t.titulo) + '">T' + (i + 1) + '</th>'; }).join('') + '<th>Promedio</th></tr></thead><tbody>' +
+        al.map(function (a) {
+          var s = 0, k = 0;
+          var tds = ts.map(function (t) { var n = m[t.id + ':' + a.id]; if (n != null) { s += Number(n); k++; } return '<td>' + notaHtml(n) + '</td>'; }).join('');
+          return '<tr><td><b>' + esc(a.nombre) + '</b></td>' + tds + '<td>' + (k ? notaHtml(Math.round(s / k * 10) / 10) : '<span class="muted">—</span>') + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+    });
+  }
+
+  /* ---------- administración (director) ---------- */
+  function verAdmin(tab) {
+    VIEW.innerHTML = '<div class="crumbs"><a href="#/">Inicio</a> › <span>Administrar colegio</span></div><div class="hello"><h1>Administrar colegio</h1></div>' +
+      '<div class="tabs">' + [['cursos', '📚 Cursos'], ['profesores', '🧑‍🏫 Profesores'], ['alumnos', '🎒 Alumnos']].map(function (x) { return '<button data-go="#/admin/' + x[0] + '" class="' + (tab === x[0] ? 'on' : '') + '">' + x[1] + '</button>'; }).join('') + '</div><div id="ad"></div>';
+    var ad = $('ad');
+    if (tab === 'cursos') {
+      ad.innerHTML = '<div class="sec"><div class="sec-h"><span class="muted">Cada curso pertenece a un salón y tiene un profesor.</span><button class="btn pri sm" id="ad-nc">+ Nuevo curso</button></div>' +
+        (CURSOS.length ? '<div class="list">' + CURSOS.map(function (c) {
+          return '<div class="it" style="cursor:default"><span class="ico" style="--c:' + esc(c.color) + '33">' + esc(c.icono) + '</span><span class="tx"><b>' + esc(c.nombre) + ' · ' + salon(c.grado, c.seccion) + '</b><span>' + esc(PROFES[c.profesor_id] || 'Sin profesor') + '</span></span><button class="btn sm" data-ec="' + c.id + '">Editar</button></div>';
+        }).join('') + '</div>' : '<div class="empty"><b>Sin cursos</b>Primero crea a los profesores y luego sus cursos.</div>') + '</div>';
+      $('ad-nc').onclick = function () { formCurso(); };
+      ad.onclick = function (e) { var b = e.target.closest('[data-ec]'); if (b) formCurso(cursoDe(+b.getAttribute('data-ec'))); };
+    } else {
+      var rol = tab === 'profesores' ? 'profesor' : 'alumno';
+      ad.innerHTML = '<div class="empty">Cargando…</div>';
+      DB.from('aula_perfiles').select('id,nombre,usuario,grado,seccion').eq('rol', rol).order('grado').order('seccion').order('nombre').then(function (r) {
+        var L = r.data || [], html = '<div class="sec"><div class="sec-h"><span class="muted">' + L.length + ' ' + tab + '</span><div class="row">' +
+          (rol === 'alumno' ? '<button class="btn acc sm" id="ad-lote">+ Salón completo</button>' : '') + '<button class="btn pri sm" id="ad-nu">+ Nuevo ' + rol + '</button></div></div>';
+        if (!L.length) html += '<div class="empty"><b>Aún no hay ' + tab + '</b>' + (rol === 'alumno' ? 'Usa «Salón completo» para pegar la lista de un aula y crear todas las cuentas de una vez.' : 'Crea la cuenta de cada profesor y entrégale su usuario y contraseña.') + '</div>';
+        var g = null;
+        L.forEach(function (p) {
+          var k = rol === 'alumno' ? salon(p.grado, p.seccion) : '';
+          if (rol === 'alumno' && k !== g) { if (g) html += '</div>'; g = k; html += '<h3 style="margin-top:8px">' + k + '</h3><div class="list">'; }
+          else if (rol !== 'alumno' && g === null) { g = ''; html += '<div class="list">'; }
+          html += '<div class="it" style="cursor:default"><span class="av" style="background:' + (rol === 'alumno' ? 'var(--sky)' : 'var(--mint)') + '">' + esc(ini(p.nombre)) + '</span><span class="tx"><b>' + esc(p.nombre) + '</b><span>usuario: ' + esc(p.usuario) + '</span></span>' +
+            '<button class="btn sm" data-rp="' + p.id + '" data-nm="' + esc(p.nombre) + '">🔑 Nueva clave</button><button class="btn sm ghost" data-del="' + p.id + '" data-nm="' + esc(p.nombre) + '" aria-label="Eliminar">🗑️</button></div>';
+        });
+        if (g !== null) html += '</div>';
+        ad.innerHTML = html + '</div>';
+        $('ad-nu').onclick = function () { formUsuario(rol); };
+        if ($('ad-lote')) $('ad-lote').onclick = formLote;
+        ad.onclick = function (e) {
+          var b = e.target.closest('[data-rp]');
+          if (b) {
+            if (!confirm('¿Generar una contraseña nueva para ' + b.getAttribute('data-nm') + '?')) return;
+            busy(b, true);
+            cuentas({ accion: 'clave', id: b.getAttribute('data-rp') }).then(function (r) {
+              busy(b, false); if (!r || r.r !== 'ok') { toast('No se pudo cambiar'); return; }
+              modal(mdHead('Nueva contraseña') + '<p style="margin:0">Entrégasela a <b>' + esc(b.getAttribute('data-nm')) + '</b>:</p><p style="margin:0;font-size:22px"><span class="cred">' + esc(r.clave) + '</span></p><p class="muted small" style="margin:0">Solo se muestra esta vez.</p><button class="btn pri" data-close>Listo</button>');
+            });
+            return;
+          }
+          var d = e.target.closest('[data-del]');
+          if (d && confirm('¿Eliminar la cuenta de ' + d.getAttribute('data-nm') + '? Se borran también sus entregas. No se puede deshacer.')) {
+            cuentas({ accion: 'borrar', id: d.getAttribute('data-del') }).then(function (r) { if (!r || r.r !== 'ok') { toast('No se pudo eliminar'); return; } toast('Cuenta eliminada'); cargarCursos().then(ruta); });
+          }
+        };
+      });
+    }
+  }
+  function selGrado(g, s) {
+    var o = ''; for (var i = 1; i <= 5; i++) o += '<option value="' + i + '"' + (i === g ? ' selected' : '') + '>' + i + '° de secundaria</option>';
+    var q = ''; 'ABCDEFGH'.split('').forEach(function (x) { q += '<option' + (x === s ? ' selected' : '') + '>' + x + '</option>'; });
+    return '<div class="grid2"><label class="f">Grado<select class="in" id="sg-g">' + o + '</select></label><label class="f">Sección<select class="in" id="sg-s">' + q + '</select></label></div>';
+  }
+  function formCurso(c) {
+    var ops = '<option value="">— Sin profesor —</option>' + Object.keys(PROFES).map(function (id) { return '<option value="' + id + '"' + (c && c.profesor_id === id ? ' selected' : '') + '>' + esc(PROFES[id]) + '</option>'; }).join('');
+    modal(mdHead(c ? 'Editar curso' : 'Nuevo curso') +
+      '<label class="f">Nombre del curso<input class="in" id="fc-n" maxlength="60" value="' + esc(c ? c.nombre : '') + '" placeholder="Ej. Matemática"></label>' + selGrado(c ? c.grado : 1, c ? c.seccion : 'A') +
+      '<label class="f">Profesor<select class="in" id="fc-p">' + ops + '</select></label>' +
+      '<label class="f">Color' + swatches(c ? c.color : COLORES[0], COLORES) + '</label><label class="f">Ícono' + swatches(c ? c.icono : ICONOS[0], ICONOS, 'ic') + '</label>' +
+      '<div class="err" id="fc-e"></div><div class="row" style="justify-content:flex-end">' + (c ? '<button class="btn bad sm" id="fc-x" type="button">Eliminar</button><span style="flex:1"></span>' : '') + '<button class="btn" data-close type="button">Cancelar</button><button class="btn pri" id="fc-ok" type="button">' + (c ? 'Guardar' : 'Crear curso') + '</button></div>',
+      function (m, close) {
+        swBind(m);
+        $('fc-ok').onclick = function () {
+          var n = $('fc-n').value.trim(); if (n.length < 2) { $('fc-e').textContent = 'Escribe el nombre del curso.'; return; }
+          var row = { nombre: n, grado: +$('sg-g').value, seccion: $('sg-s').value, profesor_id: $('fc-p').value || null, color: swVal(m, 0), icono: swVal(m, 1) };
+          var b = this; busy(b, true);
+          (c ? DB.from('aula_cursos').update(row).eq('id', c.id) : DB.from('aula_cursos').insert(row)).then(function (r) {
+            busy(b, false); if (r.error) { $('fc-e').textContent = 'No se pudo guardar. Intenta de nuevo.'; return; }
+            close(); toast(c ? 'Curso actualizado' : 'Curso creado ✅'); cargarCursos().then(ruta);
+          });
+        };
+        if ($('fc-x')) $('fc-x').onclick = function () {
+          if (!confirm('¿Eliminar «' + c.nombre + '» con todas sus tareas, materiales y notas? No se puede deshacer.')) return;
+          DB.from('aula_cursos').delete().eq('id', c.id).then(function (r) { if (r.error) { toast('No se pudo eliminar'); return; } close(); toast('Curso eliminado'); cargarCursos().then(ruta); });
+        };
+      });
+  }
+  function sugerirUsuario(n) { var p = n.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z ]/g, '').split(' ').filter(Boolean); return ((p[0] || '') + (p[1] ? '.' + p[1] : '')).slice(0, 24); }
+  function claveAzar() { var a = 'abcdefghjkmnpqrstuvwxyz', d = '23456789', r = crypto.getRandomValues(new Uint8Array(7)), s = ''; for (var i = 0; i < 4; i++) s += a[r[i] % a.length]; for (i = 4; i < 7; i++) s += d[r[i] % d.length]; return s; }
+  function formUsuario(rol) {
+    modal(mdHead('Nuevo ' + rol) +
+      '<label class="f">Nombre completo<input class="in" id="fu-n" maxlength="80" placeholder="Ej. Ana Torres Quispe"></label>' + (rol === 'alumno' ? selGrado(1, 'A') : '') +
+      '<div class="grid2"><label class="f">Usuario<input class="in" id="fu-u" maxlength="30" autocapitalize="none" spellcheck="false"></label><label class="f">Contraseña<input class="in" id="fu-p" maxlength="72" value="' + claveAzar() + '"></label></div>' +
+      '<div class="err" id="fu-e"></div><div class="row" style="justify-content:flex-end"><button class="btn" data-close type="button">Cancelar</button><button class="btn pri" id="fu-ok" type="button">Crear cuenta</button></div>',
+      function (m, close) {
+        var tocado = false;
+        $('fu-u').oninput = function () { tocado = true; };
+        $('fu-n').oninput = function () { if (!tocado) $('fu-u').value = sugerirUsuario(this.value); };
+        $('fu-ok').onclick = function () {
+          var b = this, body = { accion: 'crear', rol: rol, nombre: $('fu-n').value, usuario: $('fu-u').value.trim().toLowerCase(), clave: $('fu-p').value };
+          if (rol === 'alumno') { body.grado = +$('sg-g').value; body.seccion = $('sg-s').value; }
+          busy(b, true);
+          cuentas(body).then(function (r) {
+            busy(b, false);
+            if (!r || r.r !== 'ok') { $('fu-e').textContent = errTxt(r && (r.r || r.error)); return; }
+            close(); cargarCursos().then(ruta);
+            modal(mdHead('Cuenta creada ✅') + '<p style="margin:0">Entrégale estos datos a <b>' + esc(body.nombre) + '</b>:</p><p style="margin:0">Usuario: <span class="cred">' + esc(body.usuario) + '</span></p><p style="margin:0">Contraseña: <span class="cred">' + esc(body.clave) + '</span></p><p class="muted small" style="margin:0">Entra en: ' + esc(location.host) + '</p><button class="btn pri" data-close>Listo</button>');
+          });
+        };
+      });
+  }
+  function formLote() {
+    modal(mdHead('Crear un salón completo') + '<p class="muted" style="margin:0">Pega la lista de alumnos, <b>un nombre por línea</b>. Creo sus usuarios y contraseñas al toque.</p>' + selGrado(1, 'A') +
+      '<label class="f">Alumnos<textarea class="in" id="fl-l" style="min-height:180px" placeholder="Ana Torres Quispe&#10;Luis Ramos Huamán&#10;…"></textarea></label>' +
+      '<div class="err" id="fl-e"></div><div class="row" style="justify-content:flex-end"><button class="btn" data-close type="button">Cancelar</button><button class="btn acc" id="fl-ok" type="button">Crear cuentas</button></div>',
+      function (m, close) {
+        $('fl-ok').onclick = function () {
+          var b = this, ns = $('fl-l').value.split(/\n+/).map(function (s) { return s.trim(); }).filter(function (s) { return s.length >= 2; });
+          if (!ns.length) { $('fl-e').textContent = 'Pega al menos un nombre.'; return; }
+          if (ns.length > 60) { $('fl-e').textContent = 'Máximo 60 alumnos por vez.'; return; }
+          var g = +$('sg-g').value, s = $('sg-s').value;
+          busy(b, true);
+          cuentas({ accion: 'lote', nombres: ns, grado: g, seccion: s }).then(function (r) {
+            busy(b, false);
+            if (!r || r.r !== 'ok') { $('fl-e').textContent = errTxt(r && (r.r || r.error)); return; }
+            close(); cargarCursos().then(ruta); hojaCuentas(r.cuentas, salon(g, s));
+          });
+        };
+      });
+  }
+  function hojaCuentas(L, sal) {
+    var ok = L.filter(function (x) { return x.usuario; });
+    modal(mdHead('Cuentas de ' + sal) + '<p class="muted small" style="margin:0">Imprime o toma captura: las contraseñas <b>solo se muestran ahora</b>. Ingresan en <b>' + esc(location.host) + '</b></p>' +
+      '<table class="t"><thead><tr><th>Alumno</th><th>Usuario</th><th>Contraseña</th></tr></thead><tbody>' +
+      L.map(function (x) { return '<tr><td>' + esc(x.nombre) + '</td>' + (x.usuario ? '<td><span class="cred">' + esc(x.usuario) + '</span></td><td><span class="cred">' + esc(x.clave) + '</span></td>' : '<td colspan="2" class="err">No se pudo crear</td>') + '</tr>'; }).join('') +
+      '</tbody></table><div class="row" style="justify-content:flex-end"><button class="btn" onclick="print()">🖨️ Imprimir</button><button class="btn pri" data-close>Listo</button></div>');
+    toast(ok.length + ' cuentas creadas ✅');
+  }
+
+  /* ---------- inicio de la app ---------- */
+  DB.auth.getSession().then(function (s) { if (s.data && s.data.session) arrancar(); else showLogin(); });
+})();
+</script>
+</body>
+</html>
