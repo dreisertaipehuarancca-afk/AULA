@@ -221,7 +221,7 @@ table.t th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; 
     });
   }
   var ERR = { usuario: 'El usuario solo puede tener minúsculas, números, punto o guion bajo (3 a 30).', usuario_existe: 'Ese usuario ya existe.', clave: 'La contraseña debe tener al menos 6 caracteres.', nombre: 'Escribe el nombre completo.', grado: 'Elige grado y sección.', red: 'No hay conexión. Intenta de nuevo.' };
-  function errTxt(r) { return ERR[r] || 'No se pudo guardar. Intenta de nuevo.'; }
+  function errTxt(r) { return ERR[r] || ('No se pudo guardar. Intenta de nuevo.' + (r && /^(auth|perfil):/.test(r) ? ' (' + r + ')' : '')); }
 
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-eye]'); if (!b) return;
